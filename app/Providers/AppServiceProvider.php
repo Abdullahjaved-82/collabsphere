@@ -15,6 +15,8 @@ use App\Repositories\Interfaces\MessageRepositoryInterface;
 use App\Repositories\Eloquent\MessageRepository;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Message;
+use App\Models\Task;
+use App\Observers\TaskObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -72,5 +74,8 @@ class AppServiceProvider extends ServiceProvider
                 ->wherePivot('role', 'leader')
                 ->exists();
         });
+
+        // Register Task Observer
+        Task::observe(TaskObserver::class);
     }
 }

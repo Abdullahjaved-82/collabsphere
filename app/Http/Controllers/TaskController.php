@@ -56,6 +56,9 @@ class TaskController extends Controller
 
         // Only team leader or assigned user can update task
         if (!$isTeamLeader && !$isAssignedUser) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'You do not have permission to update this task'], 403);
+            }
             return redirect()->back()
                 ->with('error', 'You do not have permission to update this task');
         }
@@ -70,6 +73,14 @@ class TaskController extends Controller
         ]);
 
         $task->update($validated);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Task updated successfully',
+                'task' => $task
+            ]);
+        }
 
         return redirect()->back()
             ->with('success', 'Task updated successfully!');
