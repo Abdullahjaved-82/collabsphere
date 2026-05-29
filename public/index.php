@@ -17,4 +17,22 @@ require __DIR__.'/../vendor/autoload.php';
 /** @var Application $app */
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-$app->handleRequest(Request::capture());
+if (str_contains(__DIR__, 'var/task')) {
+    // On Vercel, manually handle the request in a try-catch to print the raw, original exception
+    try {
+        $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+        $request = Request::capture();
+        $response = $kernel->handle($request);
+        $response->send();
+        $kernel->terminate($request, $response);
+    } catch (\Throwable $e) {
+        echo "<h1>Original Laravel Boot Error (Vercel)</h1>";
+        echo "<h3>" . htmlspecialchars($e->getMessage()) . "</h3>";
+        echo "<p>File: " . htmlspecialchars($e->getFile()) . " on line " . $e->getLine() . "</p>";
+        echo "<h4>Stack Trace:</h4>";
+        echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    }
+} else {
+    // Locally, run the standard request lifecycle
+    $app->handleRequest(Request::capture());
+}
