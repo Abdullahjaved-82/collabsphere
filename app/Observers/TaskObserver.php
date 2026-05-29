@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Task;
 use App\Models\Activity;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class TaskObserver
@@ -23,6 +24,21 @@ class TaskObserver
             'action' => 'created',
             'description' => "{$userName} created task '{$task->title}'",
         ]);
+
+        // Send database notification if assigned to a teammate
+        if ($task->assigned_to) {
+            Notification::create([
+                'user_id' => $task->assigned_to,
+                'type' => 'task_assigned',
+                'data' => [
+                    'message' => "You have been assigned task '{$task->title}'",
+                    'project_id' => $task->project_id,
+                    'task_id' => $task->id,
+                    'icon' => '📋',
+                    'type' => 'info'
+                ]
+            ]);
+        }
     }
 
     /**
@@ -54,6 +70,36 @@ class TaskObserver
                 'task_id' => $task->id,
                 'action' => 'moved',
                 'description' => "{$userName} moved '{$task->title}' to {$newLabel}",
+            ]);
+
+            // Notify assigned user if someone else completes or updates status
+            if ($task->assigned_to && $user && $task->assigned_to !== $user->id) {
+                Notification::create([
+                    'user_id' => $task->assigned_to,
+                    'type' => 'task_status_updated',
+                    'data' => [
+                        'message' => "'{$task->title}' status updated to {$newLabel}",
+                        'project_id' => $task->project_id,
+                        'task_id' => $task->id,
+                        'icon' => '⏱',
+                        'type' => 'success'
+                    ]
+                ]);
+            }
+        }
+
+        // Notify if assigned user changes
+        if ($task->wasChanged('assigned_to') && $task->assigned_to) {
+            Notification::create([
+                'user_id' => $task->assigned_to,
+                'type' => 'task_assigned',
+                'data' => [
+                    'message' => "You have been assigned task '{$task->title}'",
+                    'project_id' => $task->project_id,
+                    'task_id' => $task->id,
+                    'icon' => '📋',
+                    'type' => 'info'
+                ]
             ]);
         }
     }

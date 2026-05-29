@@ -14,7 +14,26 @@ class ProjectService
         $data['created_by'] = $creator->id;
         $data['status'] = $data['status'] ?? 'planning';
 
-        return Project::create($data);
+        $project = Project::create($data);
+
+        // Notify other team members
+        $members = $team->users()->get();
+        foreach ($members as $member) {
+            if ($member->id !== $creator->id) {
+                \App\Models\Notification::create([
+                    'user_id' => $member->id,
+                    'type' => 'project_created',
+                    'data' => [
+                        'message' => "New project '{$project->title}' created in '{$team->name}'",
+                        'project_id' => $project->id,
+                        'icon' => '📁',
+                        'type' => 'success'
+                    ]
+                ]);
+            }
+        }
+
+        return $project;
     }
 
     public function getProjectsForTeam(int $teamId): \Illuminate\Support\Collection

@@ -10,9 +10,17 @@
         </div>
 
         @if ($teams->isEmpty())
-            <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-                <h4 class="text-lg font-semibold text-slate-900 mb-2">No teams yet</h4>
-                <p class="text-slate-600 mb-6">Create a team to start collaborating with your classmates.</p>
+            <div class="bg-white rounded-2xl border border-slate-200 py-16 px-6 text-center flex flex-col items-center">
+                <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-6 opacity-60">
+                    <circle cx="100" cy="100" r="80" stroke="#CBD5E1" stroke-width="2" fill="none"/>
+                    <circle cx="80" cy="90" r="24" stroke="#CBD5E1" stroke-width="2"/>
+                    <circle cx="120" cy="90" r="24" stroke="#CBD5E1" stroke-width="2"/>
+                    <path d="M50 145C50 120 70 110 80 110" stroke="#CBD5E1" stroke-width="2"/>
+                    <path d="M150 145C150 120 130 110 120 110" stroke="#CBD5E1" stroke-width="2"/>
+                    <path d="M70 145C70 125 90 120 100 120C110 120 130 125 130 145" stroke="#CBD5E1" stroke-width="2"/>
+                </svg>
+                <h4 class="text-xl font-bold text-slate-800 mb-2">No teams yet</h4>
+                <p class="text-slate-500 text-xs mb-6 max-w-sm">Create a team to start collaborating and sharing projects with your classmates.</p>
                 <a href="{{ route('teams.create') }}" class="cs-primary-btn inline-block">Create Team</a>
             </div>
         @else

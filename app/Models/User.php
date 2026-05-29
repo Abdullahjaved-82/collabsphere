@@ -27,6 +27,7 @@ class User extends Authenticatable
         'avatar',
         'bio',
         'role',
+        'has_completed_onboarding',
     ];
 
     /**
@@ -49,6 +50,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'has_completed_onboarding' => 'boolean',
         ];
     }
 
