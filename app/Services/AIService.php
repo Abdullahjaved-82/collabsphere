@@ -27,7 +27,8 @@ class AIService
         $systemPrompt = $this->getSystemPrompt();
         $userPrompt = $this->buildPrompt($project);
 
-        $response = Http::withToken($apiKey)
+        $response = Http::withoutVerifying()
+            ->withToken($apiKey)
             ->timeout(30)
             ->post("{$baseUrl}/chat/completions", [
                 'model' => $model,
@@ -95,7 +96,8 @@ class AIService
 
         $prompt = "Given this task:\nTitle: {$task->title}\nDescription: {$task->description}\nPriority: {$task->priority}\n\nTeam members and their current workload:\n{$memberList}\n\nWho should this task be assigned to and why? Reply in one short sentence.";
 
-        $response = Http::withToken($apiKey)
+        $response = Http::withoutVerifying()
+            ->withToken($apiKey)
             ->timeout(15)
             ->post("{$baseUrl}/chat/completions", [
                 'model' => $model,
