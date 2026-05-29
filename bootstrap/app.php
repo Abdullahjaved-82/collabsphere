@@ -19,8 +19,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
-// Dynamic storage path override for serverless hosting on Vercel
-if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL_URL']) || isset($_SERVER['VERCEL_URL'])) {
+// Dynamic storage path override for serverless hosting on Vercel (Foolproof directory check)
+if (str_contains(__DIR__, 'var/task') || str_contains(getcwd(), 'var/task') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
     $app->useStoragePath('/tmp');
 
     $storageDirs = [
