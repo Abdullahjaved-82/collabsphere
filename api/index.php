@@ -10,7 +10,12 @@ try {
     require __DIR__ . '/../public/index.php';
 } catch (\Throwable $e) {
     echo "<h1>Early Laravel Boot Error</h1>";
-    echo "<h3>" . htmlspecialchars($e->getMessage()) . "</h3>";
-    echo "<p>File: " . htmlspecialchars($e->getFile()) . " on line " . $e->getLine() . "</p>";
-    echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    
+    // Get the original, underlying exception if available
+    $original = $e->getPrevious() ?: $e;
+    
+    echo "<h3>Original Exception: " . htmlspecialchars($original->getMessage()) . "</h3>";
+    echo "<p>File: " . htmlspecialchars($original->getFile()) . " on line " . $original->getLine() . "</p>";
+    echo "<h4>Stack Trace:</h4>";
+    echo "<pre>" . htmlspecialchars($original->getTraceAsString()) . "</pre>";
 }
