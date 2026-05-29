@@ -66,7 +66,7 @@
                                         </span>
                                     </div>
                                     <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded">
-                                        📖 Read by {{ count($announcement->reads) }}
+                                        📖 Read by {{ $announcement->reads->where('user_id', '!=', $announcement->sender_id)->count() }}
                                     </span>
                                 </div>
                             </div>

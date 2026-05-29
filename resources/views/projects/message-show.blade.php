@@ -68,18 +68,18 @@
 
                 @if ($message->type === 'announcement')
                     <p class="text-sm text-slate-600">
-                        Read by <strong>{{ count($message->reads) }}</strong> team member(s)
+                        Read by <strong>{{ $message->reads->where('user_id', '!=', $message->sender_id)->count() }}</strong> team member(s)
                     </p>
                 @endif
             </div>
         </div>
 
         <!-- Read by List (for announcements) -->
-        @if ($message->type === 'announcement' && count($message->reads) > 0)
+        @if ($message->type === 'announcement' && $message->reads->where('user_id', '!=', $message->sender_id)->count() > 0)
             <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
                 <h3 class="font-semibold text-slate-900 mb-4">Read by:</h3>
                 <div class="space-y-2">
-                    @foreach ($message->reads as $read)
+                    @foreach ($message->reads->where('user_id', '!=', $message->sender_id) as $read)
                         <div class="flex items-center gap-3">
                             <img src="{{ $read->user->avatar ? asset('storage/' . $read->user->avatar) : 'https://api.dicebear.com/7.x/avataaars/svg?seed=' . urlencode($read->user->name) . '&size=32' }}" 
                                  alt="{{ $read->user->name }}"
