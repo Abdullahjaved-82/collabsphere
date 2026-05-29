@@ -116,6 +116,8 @@ class AIController extends Controller
             'tasks.*.title' => 'required|string|max:255',
             'tasks.*.description' => 'nullable|string',
             'tasks.*.priority' => 'required|in:low,medium,high,critical',
+            'tasks.*.assigned_to' => 'nullable|integer|exists:users,id',
+            'tasks.*.due_date' => 'nullable|date',
         ]);
 
         $isTeamLeader = auth()->user()->teams()
@@ -138,6 +140,8 @@ class AIController extends Controller
                 'description' => $taskData['description'] ?? '',
                 'priority' => $taskData['priority'],
                 'status' => 'todo',
+                'assigned_to' => $taskData['assigned_to'] ?? null,
+                'due_date' => $taskData['due_date'] ?? null,
             ], $project);
 
             $createdTasks[] = $task;

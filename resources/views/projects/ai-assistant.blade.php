@@ -170,9 +170,89 @@
                             onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
                             📊 Open Kanban Board
                         </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="editTaskModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: white; border-radius: 16px; width: 100%; max-width: 500px; padding: 28px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); border: 1px solid #E2E8F0; margin: 16px; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #F1F5F9; padding-bottom: 12px;">
+                <h3 style="font-size: 18px; font-weight: 700; color: #1E293B; display: flex; align-items: center; gap: 8px; margin: 0;">
+                    ✏️ Customize AI Task Suggestion
+                </h3>
+                <button onclick="closeEditModal()" style="background: none; border: none; font-size: 20px; color: #94A3B8; cursor: pointer; font-weight: bold; padding: 4px;">✕</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <input type="hidden" id="editTaskIndex">
+
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Task Title</label>
+                    <input type="text" id="editTaskTitle" style="width: 100%; px: 14px; py: 10px; border-radius: 10px; border: 1.5px solid #E2E8F0; outline: none; font-size: 14px; box-sizing: border-box; padding: 10px 14px;" placeholder="e.g. Set up database schema">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Description</label>
+                    <textarea id="editTaskDescription" rows="3" style="width: 100%; px: 14px; py: 10px; border-radius: 10px; border: 1.5px solid #E2E8F0; outline: none; font-size: 14px; resize: none; box-sizing: border-box; padding: 10px 14px;" placeholder="Write a short task description..."></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Priority</label>
+                        <select id="editTaskPriority" style="width: 100%; px: 14px; py: 10px; border-radius: 10px; border: 1.5px solid #E2E8F0; outline: none; font-size: 14px; padding: 10px 14px;">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Category</label>
+                        <select id="editTaskCategory" style="width: 100%; px: 14px; py: 10px; border-radius: 10px; border: 1.5px solid #E2E8F0; outline: none; font-size: 14px; padding: 10px 14px;">
+                            <option value="frontend">Frontend</option>
+                            <option value="backend">Backend</option>
+                            <option value="design">Design</option>
+                            <option value="research">Research</option>
+                            <option value="testing">Testing</option>
+                            <option value="documentation">Documentation</option>
+                        </select>
                     </div>
                 </div>
 
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Estimated Hours</label>
+                        <input type="number" id="editTaskHours" min="0.5" step="0.5" style="width: 100%; px: 14px; py: 10px; border-radius: 10px; border: 1.5px solid #E2E8F0; outline: none; font-size: 14px; box-sizing: border-box; padding: 10px 14px;">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Due Date</label>
+                        <input type="date" id="editTaskDueDate" style="width: 100%; px: 14px; py: 10px; border-radius: 10px; border: 1.5px solid #E2E8F0; outline: none; font-size: 14px; box-sizing: border-box; padding: 10px 14px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">Assign To</label>
+                    <select id="editTaskAssignee" style="width: 100%; px: 14px; py: 10px; border-radius: 10px; border: 1.5px solid #E2E8F0; outline: none; font-size: 14px; padding: 10px 14px;">
+                        <option value="">👤 Unassigned (Default)</option>
+                        @foreach ($project->team ? $project->team->users : [] as $member)
+                            <option value="{{ $member->id }}">👤 {{ $member->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; padding-top: 20px; border-top: 1px solid #F1F5F9; margin-top: 24px;">
+                <button onclick="closeEditModal()" style="flex: 1; padding: 12px 20px; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFFFFF; color: #475569; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#F8FAFC';" onmouseout="this.style.background='#FFFFFF';">
+                    Cancel
+                </button>
+                <button onclick="saveTaskEdits()" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #FFFFFF; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,0.35); transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+                    Save Changes
+                </button>
             </div>
         </div>
     </div>
@@ -224,6 +304,7 @@
     <script>
         const projectId = {{ $project->id }};
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const teamMembers = @json($project->team ? $project->team->users : []);
         let currentSuggestionId = null;
         let currentTasks = [];
 
@@ -301,6 +382,19 @@
                 const cat = categoryColors[task.category] || categoryColors.backend;
                 const pri = priorityColors[task.priority] || priorityColors.medium;
 
+                // Check for custom assignee or deadline
+                let assigneeName = '';
+                if (task.assigned_to) {
+                    const member = teamMembers.find(m => m.id === parseInt(task.assigned_to));
+                    if (member) assigneeName = member.name;
+                }
+
+                let dateDisplay = '';
+                if (task.due_date) {
+                    const dateObj = new Date(task.due_date);
+                    dateDisplay = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                }
+
                 const card = document.createElement('div');
                 card.className = 'ai-task-card';
                 card.id = `task-card-${index}`;
@@ -323,8 +417,25 @@
                             <span style="padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #F0FDF4; color: #166534;">
                                 ⏱ ${task.estimated_hours}h
                             </span>
+                            ${dateDisplay ? `
+                                <span style="padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #FFF7ED; color: #C2410C;">
+                                    📅 Due: ${dateDisplay}
+                                </span>
+                            ` : ''}
+                            ${assigneeName ? `
+                                <span style="padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #EFF6FF; color: #1E40AF;">
+                                    👤 Assigned to: ${assigneeName}
+                                </span>
+                            ` : ''}
                         </div>
                         <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                            <button onclick="openEditModal(${index})"
+                                style="width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid #E0E7FF; background: #EEF2FF; color: #4F46E5; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+                                onmouseover="this.style.background='#E0E7FF'; this.style.borderColor='#C7D2FE';"
+                                onmouseout="this.style.background='#EEF2FF'; this.style.borderColor='#E0E7FF';"
+                                title="Edit task details">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            </button>
                             <button onclick="acceptSingleTask(${index})"
                                 style="width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid #D1FAE5; background: #F0FDF4; color: #059669; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
                                 onmouseover="this.style.background='#D1FAE5'; this.style.borderColor='#6EE7B7';"
@@ -347,6 +458,53 @@
 
                 container.appendChild(card);
             });
+        }
+
+        function openEditModal(index) {
+            const task = currentTasks[index];
+            document.getElementById('editTaskIndex').value = index;
+            document.getElementById('editTaskTitle').value = task.title;
+            document.getElementById('editTaskDescription').value = task.description || '';
+            document.getElementById('editTaskPriority').value = task.priority || 'medium';
+            document.getElementById('editTaskCategory').value = task.category || 'backend';
+            document.getElementById('editTaskHours').value = task.estimated_hours || 2;
+            document.getElementById('editTaskDueDate').value = task.due_date || '';
+            document.getElementById('editTaskAssignee').value = task.assigned_to || '';
+
+            document.getElementById('editTaskModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editTaskModal').style.display = 'none';
+        }
+
+        function saveTaskEdits() {
+            const index = parseInt(document.getElementById('editTaskIndex').value);
+            const title = document.getElementById('editTaskTitle').value;
+            const description = document.getElementById('editTaskDescription').value;
+            const priority = document.getElementById('editTaskPriority').value;
+            const category = document.getElementById('editTaskCategory').value;
+            const hours = parseFloat(document.getElementById('editTaskHours').value) || 2;
+            const dueDate = document.getElementById('editTaskDueDate').value;
+            const assigneeId = document.getElementById('editTaskAssignee').value;
+
+            if (!title.trim()) {
+                alert('Task title is required.');
+                return;
+            }
+
+            // Update memory array
+            currentTasks[index].title = title;
+            currentTasks[index].description = description;
+            currentTasks[index].priority = priority;
+            currentTasks[index].category = category;
+            currentTasks[index].estimated_hours = hours;
+            currentTasks[index].due_date = dueDate ? dueDate : null;
+            currentTasks[index].assigned_to = assigneeId ? parseInt(assigneeId) : null;
+
+            // Re-render tasks to reflect new styling and badges
+            renderTaskCards(currentTasks);
+            closeEditModal();
         }
 
         async function acceptAllTasks() {
