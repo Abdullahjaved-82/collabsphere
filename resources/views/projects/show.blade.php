@@ -7,6 +7,7 @@
             </div>
             @if (auth()->id() === $project->created_by)
                 <div class="flex gap-3">
+                    <a href="{{ route('projects.ai', $project) }}" class="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 transition">🤖 AI Breakdown</a>
                     <a href="{{ route('projects.kanban', $project) }}" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition">📊 Kanban</a>
                     <a href="{{ route('projects.edit', $project) }}" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 transition">Edit</a>
                     <form action="{{ route('projects.destroy', $project) }}" method="POST" class="inline" onsubmit="return confirm('Delete this project?')">
@@ -16,6 +17,7 @@
                 </div>
             @else
                 <div class="flex gap-3">
+                    <a href="{{ route('projects.ai', $project) }}" class="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 transition">🤖 AI Breakdown</a>
                     <a href="{{ route('projects.kanban', $project) }}" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition">📊 Kanban</a>
                 </div>
             @endif

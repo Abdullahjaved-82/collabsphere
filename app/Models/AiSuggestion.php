@@ -16,6 +16,7 @@ class AiSuggestion extends Model
         'project_id',
         'prompt_used',
         'response_json',
+        'status',
     ];
 
     protected function casts(): array
@@ -34,3 +35,4 @@ class AiSuggestion extends Model
         return $this->belongsTo(Project::class);
     }
 }
+

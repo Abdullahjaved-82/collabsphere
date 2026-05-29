@@ -6,6 +6,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\AIController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -56,6 +57,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/messages/{message}/pin', [MessageController::class, 'pin'])->name('messages.pin');
     Route::post('/messages/mark-all-read', [MessageController::class, 'markAllRead'])->name('messages.markAllRead');
     Route::get('/api/messages/unread-count', [MessageController::class, 'getUnreadCount'])->name('api.messages.unreadCount');
+
+    // AI Assistant Routes
+    Route::get('/projects/{project}/ai-assistant', [AIController::class, 'index'])->name('projects.ai');
+    Route::post('/projects/{project}/ai/generate', [AIController::class, 'generateBreakdown'])->name('projects.ai.generate');
+    Route::post('/projects/{project}/ai/accept', [AIController::class, 'acceptSuggestions'])->name('projects.ai.accept');
+    Route::post('/ai/suggestions/{suggestion}/reject', [AIController::class, 'rejectSuggestion'])->name('ai.suggestions.reject');
 });
 
 require __DIR__.'/auth.php';
