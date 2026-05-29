@@ -252,6 +252,61 @@
         let isTeamLeader = {{ $isTeamLeader ? 'true' : 'false' }};
         let currentUserId = {{ auth()->id() }};
 
+        // Custom, high-fidelity Toast system
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.style.pointerEvents = 'auto';
+            toast.style.display = 'flex';
+            toast.style.alignItems = 'center';
+            toast.style.gap = '12px';
+            toast.style.padding = '14px 20px';
+            toast.style.borderRadius = '12px';
+            toast.style.background = 'white';
+            toast.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0,0,0,0.15)';
+            toast.style.border = '1px solid #E2E8F0';
+            toast.style.minWidth = '290px';
+            toast.style.maxWidth = '380px';
+            toast.style.transform = 'translateX(120%)';
+            toast.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            toast.style.marginBottom = '8px';
+
+            let iconSvg = '';
+            let borderColor = '#E2E8F0';
+            if (type === 'success') {
+                iconSvg = `<div style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #DEF7EC; color: #03543F; flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+                borderColor = '#A7F3D0';
+            } else if (type === 'error') {
+                iconSvg = `<div style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #FDE8E8; color: #9B1C1C; flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`;
+                borderColor = '#FCA5A5';
+            } else {
+                iconSvg = `<div style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #E1EFFE; color: #1E429F; flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>`;
+                borderColor = '#BFDBFE';
+            }
+
+            toast.style.borderLeft = `4px solid ${borderColor}`;
+
+            toast.innerHTML = `
+                ${iconSvg}
+                <div style="flex: 1; font-size: 13px; font-weight: 600; color: #374151; line-height: 1.4; font-family: sans-serif;">${message}</div>
+                <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #9CA3AF; cursor: pointer; font-size: 14px; font-weight: bold; padding: 0 4px; display: flex; align-items: center;">✕</button>
+            `;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.style.transform = 'translateX(0)';
+            });
+
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
         function initSortables() {
             document.querySelectorAll('.kanban-tasks').forEach(taskList => {
                 Sortable.create(taskList, {
@@ -297,7 +352,7 @@
         function handleDragStart(evt) {
             if (!canUserDragTask(evt.item)) {
                 evt.preventDefault();
-                alert('Only team leaders or the assigned person can move this task.');
+                showToast('Only team leaders or the assigned person can move this task.', 'error');
                 return;
             }
 
@@ -448,12 +503,13 @@
                     // Clear and close
                     e.target.reset();
                     closeTaskModal();
+                    showToast('Task created successfully!', 'success');
                 } else {
-                    alert('Error: ' + result.message);
+                    showToast('Error: ' + result.message, 'error');
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('Failed to create task');
+                showToast('Failed to create task', 'error');
             }
         });
 
@@ -464,4 +520,7 @@
             }
         });
     </script>
+
+    <!-- Beautiful Custom Toast Container -->
+    <div id="toastContainer" style="position: fixed; top: 24px; right: 24px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
 </x-app-layout>
