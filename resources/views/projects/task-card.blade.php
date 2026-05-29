@@ -1,9 +1,14 @@
-<div class="kanban-task bg-white rounded-xl border border-slate-200 p-5 cursor-grab select-none touch-none"
+<div class="kanban-task bg-white rounded-xl border border-slate-200 p-5 cursor-grab select-none touch-none shadow-sm"
      data-task-id="{{ $task->id }}"
      data-status="{{ $task->status }}"
      data-position="{{ $task->position }}"
      data-assigned-to="{{ $task->assigned_to }}"
-     style="user-select: none; touch-action: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">
+     style="user-select: none; touch-action: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; border-left: 4.5px solid {{ match($task->priority) {
+         'low' => '#CBD5E1',
+         'medium' => '#6366F1',
+         'high' => '#F97316',
+         'critical' => '#EF4444',
+     } }};">
     
     <!-- Header: Priority Badge & Categories if any -->
     <div class="flex justify-between items-center mb-3.5 pointer-events-none">

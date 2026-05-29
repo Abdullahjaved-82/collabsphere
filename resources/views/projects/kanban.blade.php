@@ -168,31 +168,32 @@
         }
 
         .column-todo {
-            background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+            background: #EEF2F6;
+            border-color: #E2E8F0;
         }
         .column-inprogress {
-            background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%);
-            border-color: #E0E7FF;
+            background: #EBF0FF;
+            border-color: #D5E0FF;
         }
         .column-review {
-            background: linear-gradient(180deg, #F8FAFC 0%, #FFFBEB 100%);
-            border-color: #FEF3C7;
+            background: #FFF9E6;
+            border-color: #FFF1C2;
         }
         .column-done {
-            background: linear-gradient(180deg, #F8FAFC 0%, #ECFDF5 100%);
-            border-color: #D1FAE5;
+            background: #EBFDF5;
+            border-color: #C6F6D5;
         }
 
         /* Task Cards Layout and Interactive States */
         .kanban-task {
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-            border-color: #E2E8F0;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.02);
+            border: 1.5px solid #E2E8F0;
         }
         .kanban-task:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
-            border-color: #C7D2FE;
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+            border-color: #A5B4FC;
         }
 
         /* Dynamic Drag over visual state */
