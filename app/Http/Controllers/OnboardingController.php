@@ -27,6 +27,12 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
 
+        if ($user->teams()->exists()) {
+            $user->has_completed_onboarding = true;
+            $user->save();
+            return redirect()->route('dashboard');
+        }
+
         // Fetch joinable teams if any (or user's teams)
         $teams = Team::latest()->take(5)->get();
 
@@ -40,7 +46,7 @@ class OnboardingController extends Controller
     {
         $validated = $request->validate([
             'bio' => 'nullable|string|max:1000',
-            'avatar' => 'nullable|image|max:2048', // max 2MB
+            'avatar' => 'nullable|image|max:10240', // max 10MB
         ]);
 
         $user = Auth::user();
@@ -71,9 +77,9 @@ class OnboardingController extends Controller
     {
         $validated = $request->validate([
             'action' => 'required|in:create,join',
-            'name' => 'required_if:action,create|string|max:255',
+            'name' => 'required_if:action,create|nullable|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'invite_code' => 'required_if:action,join|string|size:8',
+            'invite_code' => 'required_if:action,join|nullable|string|size:8',
         ]);
 
         $user = Auth::user();

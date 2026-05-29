@@ -1,59 +1,133 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 👥 CollabSphere — Student Collaboration Workspace
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CollabSphere is a premium, high-fidelity student collaboration and project management workspace built using **Laravel**, **Tailwind CSS**, and **Alpine.js**. The platform features dynamic real-time project metrics, SortableJS-based drag-and-drop Kanban task boards, AI-powered task breakdowns using the Groq API (Llama 3.1 70B), responsive message center boards, a dynamic global search overlay (`Ctrl+K`), custom toast notifications, and an automated multi-step user onboarding flow.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Core Functionalities
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Unified Analytics Dashboard (`/dashboard`)
+*   **Animated Stat Cards**: Modern top-row metric cards ("Total Tasks", "Completed", "In Progress", "Overdue") with vibrant backdrops and a smooth `1.2s` numeric count-up animation powered by `requestAnimationFrame`.
+*   **IntersectionObserver Lazy-Loaded Charts**: 
+    *   *Project Progress*: A horizontal bar chart showing completion % per project.
+    *   *Task Velocity*: A minimalist line graph sparkline showing tasks completed over the last 14 days, complete with smooth cubic-bezier curves and soft background gradients.
+    *   *Member Workload*: A doughnut chart illustrating current active task assignment distribution among teammates.
+*   **Recent Activity Sidebar**: A live vertical audit log pulling recent task creations and drag-and-drop movements with relative time stamps (e.g. "3 minutes ago").
+*   **Mock Auto-Seeder**: Instantly populates your dashboard with high-fidelity projects, tasks, and historical activity feeds on newly created teams.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Collapsible My Tasks Workspace (`/my-tasks`)
+*   **Project Grouping Accordions**: Groups all your assigned tasks by project in clean collapsible cards with animated rotating chevron indicators.
+*   **Live Filter Tabs**: Filter bar featuring **All**, **Todo**, **In Progress**, and **Overdue** tabs, with real-time numeric badges displaying active counts for each category.
+*   **Inline AJAX Checkboxes**: Designed custom round circular checkboxes. Checking a box instantly strikes through the task title, updates the status badge, recalculates total stats, and updates the database via an AJAX PATCH request.
+*   **Overdue Highlights**: Tasks past their target dates are flagged with soft red backgrounds (`rgba(239, 68, 68, 0.04)`) and bold red clock indicators.
 
-## Learning Laravel
+### 3. SortableJS Kanban Board (`/projects/{project}/kanban`)
+*   **Interactive Columns**: Drag-and-drop tasks between columns (*To Do*, *In Progress*, *Review*, *Done*) with smooth cubic-bezier transitions.
+*   **Visual Highlights**: Highlights drop target columns dynamically during active card drags.
+*   **Task Creator Modals**: Quick-action modal inside the Kanban board to instantly create, save, and inject new tasks into the column layout without full page refreshes.
+*   **Background Polling**: Auto-polls every 10 seconds to keep client boards perfectly synchronized across teammate browsers.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 4. Groq AI Task Assistant (`/projects/{project}/ai-assistant`)
+*   **Intelligent Breakdown**: Leverages the **Groq API** (Llama 3.1 70B model) to analyze project descriptions and generate structured, context-rich task breakdowns.
+*   **Staggered Card Entrance**: Renders AI recommendations in a beautiful staggered sequence with category badges.
+*   **Accept / Reject Transitions**: Let's users adjust details (deadlines, priorities, team assignments) inline, accepting fly-out animations or rejecting items.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 5. Multi-Step Onboarding Wizard (`/onboarding`)
+*   **Route Gating Middleware**: Custom middleware blocks all application screens and redirects newly registered users to `/onboarding`.
+*   **3-Step Setup Wizard**:
+    *   *Step 1*: Write a biography and upload a teammate portrait (avatar).
+    *   *Step 2*: Create a brand-new team workspace or join an existing team via an invite code (using modern sliding tab cards).
+    *   *Step 3*: Launch your first project inside the selected team.
+*   **Completion Checkmarks**: Sets `has_completed_onboarding = true` upon completion and redirects to the dashboard.
 
-## Laravel Sponsors
+### 6. Command-K Global Search Modal
+*   **Instant Keyboard Overlay**: Pressing `Ctrl + K` or `Cmd + K` on any screen opens a blur-backdrop centered search modal.
+*   **Debounced AJAX Search**: live search queries the API using a `300ms` input debounce.
+*   **Categorized Results**: Groups matches under **Projects**, **Tasks**, and **Team Members** with custom category icons and description subtitles.
+*   **Full Keyboard Navigation**: Move selection up/down with arrow keys (`ArrowUp` / `ArrowDown`) and press `Enter` to navigate to the resource.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 7. Message Center & Announcements (`/messages`)
+*   **Direct Mail**: Send private, direct messages to teammate inbox boards.
+*   **Pinned Team Announcements**: Dedicated announcement drafts accessible only to Team Leaders, with options to globally pin priority news to the header banner for all members.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🛠 Prerequisites & System Requirements
 
-## Contributing
+Before running the project, ensure your environment meets the following software requirements:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+*   **PHP**: `^8.2` or higher
+*   **Composer**: Dependency Manager for PHP
+*   **Node.js & NPM**: `^18.x` or higher (for compiling frontend assets)
+*   **SQLite**: Database engine (configured by default for lightweight local development)
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📦 Setup & Installation Guide
 
-## Security Vulnerabilities
+Follow these sequential steps to configure, install, and initialize CollabSphere locally:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Step 1: Clone the Repository & Install PHP Dependencies
+Navigate to your projects directory and install Composer dependencies:
+```bash
+composer install
+```
 
-## License
+### Step 2: Install Node.js Dependencies & Compile Assets
+Download NPM dependencies and compile frontend production-ready assets:
+```bash
+npm install
+npm run build
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Step 3: Configure Environment Variables
+Copy the template `.env` file to create your active configurations:
+```bash
+copy .env.example .env
+```
+
+### Step 4: Generate Application Key
+Generate a secure application key:
+```bash
+php artisan key:generate
+```
+
+### Step 5: Configure SQLite Database File
+Create the lightweight SQLite database file referenced in the default `.env` configuration:
+```bash
+# Windows PowerShell command to create database file
+New-Item -Path "database" -Name "database.sqlite" -ItemType "file" -Force
+```
+
+### Step 6: Execute Migrations
+Run database migrations to generate all standard tables (Users, Teams, Projects, Tasks, Notifications, Messages, Activities):
+```bash
+php artisan migrate
+```
+
+---
+
+## 🚦 Commands to Run the Project
+
+To start your fully functional CollabSphere application, open two separate terminal sessions and execute the following commands:
+
+### Terminal 1: Start Laravel Development Server
+Start the core PHP backend web server:
+```bash
+php artisan serve
+```
+*The application will now be running locally at **`http://127.0.0.1:8000`**.*
+
+### Terminal 2: Run Vite Dev Asset Server
+Start the active asset hot-reloading dev server:
+```bash
+npm run dev
+```
+
+---
+
+## 🧪 Verification & Testing
+To execute the automated unit and feature test suites (Authentication, Registrations, Profile Updates, Password Resets) to ensure your workspace setup is 100% correct, run:
+```bash
+php artisan test
+```

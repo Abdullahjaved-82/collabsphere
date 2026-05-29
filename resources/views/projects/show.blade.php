@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-4">
             <div>
                 <h2 class="text-3xl font-semibold text-slate-900">{{ $project->title }}</h2>
                 <p class="mt-1 text-sm text-slate-500">{{ $project->team->name }}</p>
             </div>
             @if (auth()->id() === $project->created_by)
-                <div class="flex gap-3">
+                <div class="flex gap-2.5 flex-wrap">
                     <a href="{{ route('projects.ai', $project) }}" class="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 transition">🤖 AI Breakdown</a>
                     <a href="{{ route('projects.kanban', $project) }}" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition">📊 Kanban</a>
                     <a href="{{ route('projects.edit', $project) }}" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 transition">Edit</a>
@@ -16,7 +16,7 @@
                     </form>
                 </div>
             @else
-                <div class="flex gap-3">
+                <div class="flex gap-2.5 flex-wrap">
                     <a href="{{ route('projects.ai', $project) }}" class="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 transition">🤖 AI Breakdown</a>
                     <a href="{{ route('projects.kanban', $project) }}" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition">📊 Kanban</a>
                 </div>
@@ -26,7 +26,7 @@
 
     <div class="py-8">
         <div class="bg-white rounded-2xl border border-slate-200 p-8">
-            <div class="grid grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
                 <div>
                     <p class="text-sm text-slate-500 mb-1">Status</p>
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ match($project->status) {
