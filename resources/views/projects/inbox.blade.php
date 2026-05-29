@@ -5,10 +5,17 @@
                 <h2 class="text-3xl font-semibold text-slate-900">Messages</h2>
                 <p class="mt-1 text-sm text-slate-500">Manage conversations and announcements</p>
             </div>
-            <button id="composeBtn" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #FFFFFF; font-weight: 600; font-size: 14px; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,0.35); transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px rgba(99,102,241,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(99,102,241,0.35)';">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                New Message
-            </button>
+            <div class="flex items-center gap-3">
+                @if (Auth::user()->teams()->wherePivot('role', 'leader')->exists())
+                    <a href="{{ route('messages.announcement') }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: linear-gradient(135deg, #7C3AED, #A78BFA); color: #FFFFFF; font-weight: 600; font-size: 14px; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 14px rgba(124,58,237,0.35); transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='translateY(0)';">
+                        📢 Send Announcement
+                    </a>
+                @endif
+                <button id="composeBtn" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #FFFFFF; font-weight: 600; font-size: 14px; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,0.35); transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px rgba(99,102,241,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(99,102,241,0.35)';">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    New Message
+                </button>
+            </div>
         </div>
     </x-slot>
 
@@ -24,6 +31,9 @@
             <button class="tab-btn px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-medium" data-tab="sent">
                 📤 Sent
             </button>
+            <a href="{{ route('messages.announcements') }}" class="tab-link px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-medium no-underline">
+                📢 Announcements
+            </a>
         </div>
 
         <!-- Inbox Tab -->
