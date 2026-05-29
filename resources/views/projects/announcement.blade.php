@@ -28,7 +28,7 @@
                     <select name="team_id" required class="cs-input w-full">
                         <option value="">Choose a team...</option>
                         @foreach ($teams as $team)
-                            <option value="{{ $team->id }}" {{ old('team_id') == $team->id ? 'selected' : '' }}>
+                            <option value="{{ $team->id }}" {{ (isset($teamId) && $teamId == $team->id) || old('team_id') == $team->id ? 'selected' : '' }}>
                                 {{ $team->name }} ({{ $team->users->count() }} members)
                             </option>
                         @endforeach
