@@ -29,7 +29,7 @@
                         <option value="">Choose a team...</option>
                         @foreach ($teams as $team)
                             <option value="{{ $team->id }}" {{ old('team_id') == $team->id ? 'selected' : '' }}>
-                                {{ $team->name }} ({{ $team->members->count() }} members)
+                                {{ $team->name }} ({{ $team->users->count() }} members)
                             </option>
                         @endforeach
                     </select>
@@ -79,7 +79,7 @@
                     <div class="p-4 bg-slate-50 rounded-lg">
                         <p class="text-sm font-semibold text-slate-900 mb-3">Recipients:</p>
                         <div class="flex flex-wrap gap-2">
-                            @foreach ($teams->find($teamId)?->members ?? [] as $member)
+                            @foreach ($teams->find($teamId)?->users ?? [] as $member)
                                 <div class="flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-slate-200">
                                     <img src="{{ $member->avatar ? asset('storage/' . $member->avatar) : 'https://api.dicebear.com/7.x/avataaars/svg?seed=' . urlencode($member->name) . '&size=24' }}" 
                                          alt="{{ $member->name }}"
