@@ -1,13 +1,6 @@
 <?php
 
-// Dynamic cache path override for serverless hosting on Vercel (Write to /tmp since user folder is read-only)
-if (str_contains(__DIR__, 'var/task') || str_contains(getcwd(), 'var/task') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
-    $_ENV['APP_SERVICES_CACHE'] = '/tmp/cache/services.php';
-    $_ENV['APP_PACKAGES_CACHE'] = '/tmp/cache/packages.php';
-    $_ENV['APP_CONFIG_CACHE'] = '/tmp/cache/config.php';
-    $_ENV['APP_ROUTES_CACHE'] = '/tmp/cache/routes-v7.php';
-    $_ENV['APP_EVENTS_CACHE'] = '/tmp/cache/events.php';
-}
+// Dynamic cache path override for serverless hosting on Vercel is now handled in public/index.php and api/index.php
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;

@@ -1,5 +1,27 @@
 <?php
 
+if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || str_contains(__DIR__, 'var/task')) {
+    $_ENV['APP_SERVICES_CACHE'] = '/tmp/cache/services.php';
+    $_ENV['APP_PACKAGES_CACHE'] = '/tmp/cache/packages.php';
+    $_ENV['APP_CONFIG_CACHE'] = '/tmp/cache/config.php';
+    $_ENV['APP_ROUTES_CACHE'] = '/tmp/cache/routes-v7.php';
+    $_ENV['APP_EVENTS_CACHE'] = '/tmp/cache/events.php';
+    putenv('APP_SERVICES_CACHE=/tmp/cache/services.php');
+    putenv('APP_PACKAGES_CACHE=/tmp/cache/packages.php');
+    putenv('APP_CONFIG_CACHE=/tmp/cache/config.php');
+    putenv('APP_ROUTES_CACHE=/tmp/cache/routes-v7.php');
+    putenv('APP_EVENTS_CACHE=/tmp/cache/events.php');
+    $_SERVER['APP_SERVICES_CACHE'] = '/tmp/cache/services.php';
+    $_SERVER['APP_PACKAGES_CACHE'] = '/tmp/cache/packages.php';
+    $_SERVER['APP_CONFIG_CACHE'] = '/tmp/cache/config.php';
+    $_SERVER['APP_ROUTES_CACHE'] = '/tmp/cache/routes-v7.php';
+    $_SERVER['APP_EVENTS_CACHE'] = '/tmp/cache/events.php';
+
+    if (!is_dir('/tmp/cache')) {
+        mkdir('/tmp/cache', 0755, true);
+    }
+}
+
 // Force error reporting at the PHP level
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
