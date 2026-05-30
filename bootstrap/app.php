@@ -16,7 +16,17 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Intercept raw exceptions early on Vercel before the renderer crashes on the 'view' service
+        $exceptions->report(function (\Throwable $e) {
+            if (str_contains(__DIR__, 'var/task') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
+                echo "<h1>RAW BOOTSTRAP EXCEPTION CAUGHT</h1>";
+                echo "<h3>Message: " . htmlspecialchars($e->getMessage()) . "</h3>";
+                echo "<p>File: " . htmlspecialchars($e->getFile()) . " on line " . $e->getLine() . "</p>";
+                echo "<h4>Stack Trace:</h4>";
+                echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+                exit;
+            }
+        });
     })->create();
 
 // Dynamic storage path override for serverless hosting on Vercel (Foolproof directory check)
