@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": "public",
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.3"
@@ -8,11 +9,11 @@
   "routes": [
     {
       "src": "/build/(.*)",
-      "dest": "/public/build/$1"
+      "dest": "/build/$1"
     },
     {
-      "src": "/(.*)\\.(css|js|png|jpg|jpeg|gif|svg|ico|txt)$",
-      "dest": "/public/$1.$2"
+      "src": "/(.*)\\.(css|js|png|jpg|jpeg|gif|svg|ico|txt|woff|woff2|ttf|eot)$",
+      "dest": "/$1.$2"
     },
     {
       "src": "/(.*)",
