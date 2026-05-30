@@ -6,16 +6,31 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || str_contains(__DIR__,
     $_ENV['APP_CONFIG_CACHE'] = '/tmp/cache/config.php';
     $_ENV['APP_ROUTES_CACHE'] = '/tmp/cache/routes-v7.php';
     $_ENV['APP_EVENTS_CACHE'] = '/tmp/cache/events.php';
+    
+    // Serverless-compatible drivers
+    $_ENV['CACHE_STORE'] = 'file';
+    $_ENV['SESSION_DRIVER'] = 'cookie';
+    $_ENV['QUEUE_CONNECTION'] = 'sync';
+
     putenv('APP_SERVICES_CACHE=/tmp/cache/services.php');
     putenv('APP_PACKAGES_CACHE=/tmp/cache/packages.php');
     putenv('APP_CONFIG_CACHE=/tmp/cache/config.php');
     putenv('APP_ROUTES_CACHE=/tmp/cache/routes-v7.php');
     putenv('APP_EVENTS_CACHE=/tmp/cache/events.php');
+    
+    putenv('CACHE_STORE=file');
+    putenv('SESSION_DRIVER=cookie');
+    putenv('QUEUE_CONNECTION=sync');
+
     $_SERVER['APP_SERVICES_CACHE'] = '/tmp/cache/services.php';
     $_SERVER['APP_PACKAGES_CACHE'] = '/tmp/cache/packages.php';
     $_SERVER['APP_CONFIG_CACHE'] = '/tmp/cache/config.php';
     $_SERVER['APP_ROUTES_CACHE'] = '/tmp/cache/routes-v7.php';
     $_SERVER['APP_EVENTS_CACHE'] = '/tmp/cache/events.php';
+    
+    $_SERVER['CACHE_STORE'] = 'file';
+    $_SERVER['SESSION_DRIVER'] = 'cookie';
+    $_SERVER['QUEUE_CONNECTION'] = 'sync';
 
     if (!is_dir('/tmp/cache')) {
         mkdir('/tmp/cache', 0755, true);
