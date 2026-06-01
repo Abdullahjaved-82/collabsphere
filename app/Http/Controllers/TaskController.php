@@ -48,8 +48,8 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         $project = $task->project;
-        $isTeamLeader = auth()->user()->teams()
-            ->where('team_id', $project->team_id)
+        $isTeamLeader = $project->team->users()
+            ->where('user_id', auth()->id())
             ->wherePivot('role', 'leader')
             ->exists();
         $isAssignedUser = $task->assigned_to === auth()->id();

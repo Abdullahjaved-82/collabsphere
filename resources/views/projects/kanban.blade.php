@@ -407,6 +407,7 @@
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                 },
                 body: JSON.stringify({
@@ -414,16 +415,18 @@
                     position: newPosition,
                 }),
             })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success) {
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok || !data.success) {
                     console.error('Update failed:', data);
-                    setTimeout(() => location.reload(), 500);
+                    showToast('Failed to move task: ' + (data.message || 'Server error'), 'error');
+                    setTimeout(() => location.reload(), 2000);
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
-                setTimeout(() => location.reload(), 500);
+                showToast('Network error while moving task', 'error');
+                setTimeout(() => location.reload(), 2000);
             });
         }
 

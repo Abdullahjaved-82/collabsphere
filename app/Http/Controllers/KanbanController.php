@@ -39,6 +39,12 @@ class KanbanController extends Controller
 
         // Only team leader or assigned user can move tasks
         if (!$isTeamLeader && !$isAssignedUser) {
+            \Log::error("Kanban move failed auth", [
+                'task_id' => $task->id,
+                'user_id' => auth()->id(),
+                'assigned_to' => $task->assigned_to,
+                'isTeamLeader' => $isTeamLeader,
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'You do not have permission to move this task',
