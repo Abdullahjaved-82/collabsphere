@@ -29,7 +29,8 @@ class ProjectController extends Controller
 
     public function create(): View
     {
-        $teams = auth()->user()->teams;
+        // Only show teams where the user is the leader
+        $teams = auth()->user()->teams()->wherePivot('role', 'leader')->get();
 
         return view('projects.create', compact('teams'));
     }
@@ -45,6 +46,10 @@ class ProjectController extends Controller
         ]);
 
         $team = Team::findOrFail($validated['team_id']);
+
+        if (!$team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists()) {
+            abort(403, 'Only team leaders can create projects for this team.');
+        }
 
         $project = $this->projectService->createProject($validated, $team, auth()->user());
 
