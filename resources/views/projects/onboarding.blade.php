@@ -62,7 +62,7 @@
             <div class="flex items-center justify-between mb-10 relative">
                 <!-- Connecting Line -->
                 <div class="absolute left-0 right-0 h-1 bg-slate-100 top-1/2 -translate-y-1/2 z-0">
-                    <div class="h-full bg-indigo-500 transition-all duration-300" :style="`width: ${(currentStep - 1) * 50}%`"></div>
+                    <div class="h-full bg-indigo-500 transition-all duration-300" :style="`width: ${(currentStep - 1) * (teamAction === 'join' ? 100 : 50)}%`"></div>
                 </div>
 
                 <!-- Step 1 Dot -->
@@ -333,7 +333,13 @@
                         if (data.success) {
                             window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message, type: 'success' } }));
                             this.createdTeamId = data.team.id;
-                            this.currentStep = 3;
+                            
+                            // If user JOINED a team, skip project creation (admin already did it)
+                            if (this.teamAction === 'join') {
+                                this.finishOnboarding();
+                            } else {
+                                this.currentStep = 3;
+                            }
                         } else {
                             window.dispatchEvent(new CustomEvent('toast', { detail: { message: data.message || 'Action failed', type: 'error' } }));
                         }
