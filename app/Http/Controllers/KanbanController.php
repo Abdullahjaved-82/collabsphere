@@ -17,8 +17,8 @@ class KanbanController extends Controller
     public function show(Project $project)
     {
         $kanbanData = $this->taskService->getKanbanData($project);
-        $isTeamLeader = auth()->user()->teams()
-            ->where('team_id', $project->team_id)
+        $isTeamLeader = $project->team->users()
+            ->where('user_id', auth()->id())
             ->wherePivot('role', 'leader')
             ->exists();
         
@@ -31,8 +31,8 @@ class KanbanController extends Controller
     public function updatePosition(Request $request, Task $task)
     {
         $project = $task->project;
-        $isTeamLeader = auth()->user()->teams()
-            ->where('team_id', $project->team_id)
+        $isTeamLeader = $project->team->users()
+            ->where('user_id', auth()->id())
             ->wherePivot('role', 'leader')
             ->exists();
         $isAssignedUser = $task->assigned_to === auth()->id();
@@ -64,8 +64,8 @@ class KanbanController extends Controller
     public function store(Request $request, Project $project)
     {
         // Only team leaders can create tasks
-        $isTeamLeader = auth()->user()->teams()
-            ->where('team_id', $project->team_id)
+        $isTeamLeader = $project->team->users()
+            ->where('user_id', auth()->id())
             ->wherePivot('role', 'leader')
             ->exists();
 
