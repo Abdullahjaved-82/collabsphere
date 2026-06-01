@@ -5,7 +5,7 @@
                 <h2 class="text-3xl font-semibold text-slate-900">{{ $project->title }}</h2>
                 <p class="mt-1 text-sm text-slate-500">{{ $project->team->name }}</p>
             </div>
-            @if (auth()->id() === $project->created_by)
+            @if ($project->team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
                 <div class="flex gap-2.5 flex-wrap">
                     <a href="{{ route('projects.ai', $project) }}" class="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 transition">🤖 AI Breakdown</a>
                     <a href="{{ route('projects.kanban', $project) }}" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition">📊 Kanban</a>
@@ -57,7 +57,7 @@
             <div class="border-t border-slate-200 pt-8">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold text-slate-900">Tasks ({{ $project->tasks->count() }})</h3>
-                    @if (auth()->id() === $project->created_by)
+                    @if ($project->team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
                         <a href="{{ route('tasks.create', $project) }}" class="cs-primary-btn text-sm">+ Add Task</a>
                     @endif
                 </div>
@@ -66,7 +66,7 @@
                 @else
                     <div class="space-y-2">
                         @foreach ($project->tasks as $task)
-                            @if (auth()->id() === $project->created_by)
+                            @if ($project->team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
                                 <a href="{{ route('tasks.edit', $task) }}" class="group">
                             @else
                                 <div class="group">
@@ -109,7 +109,7 @@
                                         @endif
                                     </div>
                                 </div>
-                            @if (auth()->id() === $project->created_by)
+                            @if ($project->team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
                                 </a>
                             @else
                                 </div>

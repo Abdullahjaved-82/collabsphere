@@ -27,12 +27,13 @@ class ProjectController extends Controller
         return view('projects.index', compact('projects', 'teams'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
         // Only show teams where the user is the leader
         $teams = auth()->user()->teams()->wherePivot('role', 'leader')->get();
+        $preselectedTeamId = $request->query('team_id');
 
-        return view('projects.create', compact('teams'));
+        return view('projects.create', compact('teams', 'preselectedTeamId'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -65,13 +66,21 @@ class ProjectController extends Controller
 
     public function edit(Project $project): View
     {
-        $teams = auth()->user()->teams;
+        if (!$project->team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists()) {
+            abort(403, 'Only team leaders can edit this project.');
+        }
+
+        // Only show teams where user is leader
+        $teams = auth()->user()->teams()->wherePivot('role', 'leader')->get();
 
         return view('projects.edit', compact('project', 'teams'));
     }
 
     public function update(Request $request, Project $project): RedirectResponse
     {
+        if (!$project->team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists()) {
+            abort(403, 'Only team leaders can update this project.');
+        }
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
@@ -86,6 +95,10 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): RedirectResponse
     {
+        if (!$project->team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists()) {
+            abort(403, 'Only team leaders can delete this project.');
+        }
+
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully!');

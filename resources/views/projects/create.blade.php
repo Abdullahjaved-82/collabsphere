@@ -14,7 +14,7 @@
                         <select id="team_id" name="team_id" required class="cs-input">
                             <option value="">Select a team</option>
                             @foreach ($teams as $team)
-                                <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                <option value="{{ $team->id }}" {{ (isset($preselectedTeamId) && $preselectedTeamId == $team->id) ? 'selected' : '' }}>{{ $team->name }}</option>
                             @endforeach
                         </select>
                         @error('team_id')

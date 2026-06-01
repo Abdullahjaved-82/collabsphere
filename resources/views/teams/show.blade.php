@@ -53,7 +53,7 @@
                 @if ($team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
                     <p class="text-slate-500 text-center py-8">No projects yet. Create a new project to get started.</p>
                     <div class="text-center">
-                        <a href="{{ route('projects.create') }}" class="cs-primary-btn inline-block">Create Project</a>
+                        <a href="{{ route('projects.create', ['team_id' => $team->id]) }}" class="cs-primary-btn inline-block">Create Project</a>
                     </div>
                 @else
                     <p class="text-slate-500 text-center py-8">No projects yet. Ask your team leader to create one.</p>
