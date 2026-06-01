@@ -10,6 +10,7 @@
                 <p class="text-slate-600 mb-6">{{ $team->description }}</p>
             @endif
 
+            @if ($team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
             <div class="mb-6">
                 <p class="text-sm text-slate-500 mb-2">Invite Code</p>
                 <div class="flex items-center gap-3">
@@ -22,6 +23,7 @@
                 </div>
                 <p class="text-xs text-slate-500 mt-2">Share this code with your teammates to invite them.</p>
             </div>
+            @endif
 
         </div>
 
@@ -48,10 +50,14 @@
         <div class="bg-white rounded-2xl border border-slate-200 p-8">
             <h3 class="text-lg font-semibold text-slate-900 mb-6">Projects ({{ $team->projects->count() }})</h3>
             @if ($team->projects->isEmpty())
-                <p class="text-slate-500 text-center py-8">No projects yet. Create a new project to get started.</p>
-                <div class="text-center">
-                    <a href="{{ route('projects.create') }}" class="cs-primary-btn inline-block">Create Project</a>
-                </div>
+                @if ($team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
+                    <p class="text-slate-500 text-center py-8">No projects yet. Create a new project to get started.</p>
+                    <div class="text-center">
+                        <a href="{{ route('projects.create') }}" class="cs-primary-btn inline-block">Create Project</a>
+                    </div>
+                @else
+                    <p class="text-slate-500 text-center py-8">No projects yet. Ask your team leader to create one.</p>
+                @endif
             @else
                 <div class="space-y-3">
                     @foreach ($team->projects as $project)
