@@ -16,6 +16,23 @@ class AIController extends Controller
     ) {}
 
     /**
+     * Show the AI Hub page — pick a project to use the AI assistant.
+     */
+    public function hub()
+    {
+        $user = auth()->user();
+        $teams = $user->teams()->with('projects')->get();
+
+        // If user only has one project, go directly to it
+        $allProjects = $teams->flatMap->projects;
+        if ($allProjects->count() === 1) {
+            return redirect()->route('projects.ai', $allProjects->first());
+        }
+
+        return view('projects.ai-hub', compact('teams'));
+    }
+
+    /**
      * Show the AI Assistant page for a project.
      */
     public function index(Project $project)

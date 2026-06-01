@@ -179,6 +179,7 @@ Route::middleware(['auth', 'onboarded'])->group(function () {
     Route::get('/api/messages/unread-count', [MessageController::class, 'getUnreadCount'])->name('api.messages.unreadCount');
 
     // AI Assistant Routes
+    Route::get('/ai-assistant', [AIController::class, 'hub'])->name('ai.hub');
     Route::get('/projects/{project}/ai-assistant', [AIController::class, 'index'])->name('projects.ai');
     Route::post('/projects/{project}/ai/generate', [AIController::class, 'generateBreakdown'])->name('projects.ai.generate');
     Route::post('/projects/{project}/ai/accept', [AIController::class, 'acceptSuggestions'])->name('projects.ai.accept');

@@ -69,8 +69,8 @@
                     ],
                     [
                         'label' => 'AI Assistant',
-                        'href' => request()->route('project') ? route('projects.ai', request()->route('project')) : '#',
-                        'active' => request()->routeIs('projects.ai'),
+                        'href' => request()->route('project') ? route('projects.ai', request()->route('project')) : route('ai.hub'),
+                        'active' => request()->routeIs('projects.ai') || request()->routeIs('ai.hub'),
                         'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-robot" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M8 4h8a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z" /><path d="M12 2v2" /><path d="M9 9v1" /><path d="M15 9v1" /><path d="M8 16h8" /><path d="M5 12v4a2 2 0 0 0 2 2h1" /><path d="M19 12v4a2 2 0 0 1-2 2h-1" /></svg>',
                     ],
                 ];
@@ -91,14 +91,12 @@
 
                 <nav class="mt-10 space-y-2">
                     @foreach ($navItems as $item)
-                        @if ($item['label'] !== 'AI Assistant' || ($item['label'] === 'AI Assistant' && request()->route('project')))
                             <a href="{{ $item['href'] }}"
                                class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg border-l-[3px] transition duration-150 {{ $item['active'] ? 'bg-[rgba(99,102,241,0.15)] border-[#6366F1] text-white' : 'border-transparent text-slate-300 hover:bg-white/5' }}"
                                @if ($item['active']) aria-current="page" @endif>
                                 <span class="text-indigo-200">{!! $item['icon'] !!}</span>
                                 <span class="text-sm font-medium">{{ $item['label'] }}</span>
                             </a>
-                        @endif
                     @endforeach
                 </nav>
 
@@ -145,14 +143,12 @@
 
                         <nav class="mt-10 space-y-2 flex-1">
                             @foreach ($navItems as $item)
-                                @if ($item['label'] !== 'AI Assistant' || ($item['label'] === 'AI Assistant' && request()->route('project')))
                                     <a href="{{ $item['href'] }}"
                                        @click="mobileMenuOpen = false"
                                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg border-l-[3px] transition {{ $item['active'] ? 'bg-[rgba(99,102,241,0.15)] border-[#6366F1] text-white' : 'border-transparent text-slate-300 hover:bg-white/5' }}">
                                         <span class="text-indigo-200">{!! $item['icon'] !!}</span>
                                         <span class="text-sm font-semibold">{{ $item['label'] }}</span>
                                     </a>
-                                @endif
                             @endforeach
                         </nav>
 
