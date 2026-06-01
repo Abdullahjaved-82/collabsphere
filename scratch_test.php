@@ -1,23 +1,23 @@
 <?php
+require 'vendor/autoload.php';
+$app = require_once 'bootstrap/app.php';
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+use Illuminate\Http\Request;
 use App\Models\Task;
+use App\Models\User;
 
 $task = Task::first();
-if (!$task) {
-    echo "No task found.\n";
-    exit;
-}
+$user = User::first(); // Assuming this is the team leader
 
-$project = $task->project;
-if (!$project) {
-    echo "No project found for task.\n";
-    exit;
-}
+$request = Request::create('/tasks/' . $task->id . '/position', 'PATCH', [
+    'status' => 'in_progress',
+    'position' => 1,
+]);
+$request->headers->set('Accept', 'application/json');
 
-$isTeamLeader = $project->team->users()
-    ->where('user_id', 1) // assuming user ID 1
-    ->wherePivot('role', 'leader')
-    ->exists();
+auth()->login($user);
 
-echo "Task ID: {$task->id}\n";
-echo "Team ID: {$project->team_id}\n";
-echo "Is Team Leader (User 1): " . ($isTeamLeader ? 'Yes' : 'No') . "\n";
+$response = app()->handle($request);
+echo "Status: " . $response->getStatusCode() . "\n";
+echo "Content: " . $response->getContent() . "\n";

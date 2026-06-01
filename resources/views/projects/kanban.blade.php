@@ -402,30 +402,29 @@
 
             console.log(`Moving task ${taskId} to ${newStatus} position ${newPosition}`);
 
-            // AJAX position update
-            fetch(`/tasks/${taskId}/position`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                },
-                body: JSON.stringify({
-                    status: newStatus,
-                    position: newPosition,
-                }),
+            // AJAX position update using Axios to ensure Laravel handles it as a proper XHR request
+            axios.patch(`/tasks/${taskId}/position`, {
+                status: newStatus,
+                position: newPosition,
             })
-            .then(async res => {
-                const data = await res.json();
-                if (!res.ok || !data.success) {
-                    console.error('Update failed:', data);
-                    showToast('Failed to move task: ' + (data.message || 'Server error'), 'error');
+            .then(res => {
+                if (!res.data.success) {
+                    console.error('Update failed:', res.data);
+                    showToast('Failed to move task: ' + (res.data.message || 'Server error'), 'error');
                     setTimeout(() => location.reload(), 2000);
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
-                showToast('Network error while moving task', 'error');
+                let errorMsg = 'Network error while moving task';
+                if (err.response && err.response.data && err.response.data.message) {
+                    errorMsg = err.response.data.message;
+                } else if (err.response && err.response.status === 403) {
+                    errorMsg = 'You do not have permission to move this task.';
+                } else if (err.response && err.response.status === 422) {
+                    errorMsg = 'Invalid status or position data.';
+                }
+                showToast(errorMsg, 'error');
                 setTimeout(() => location.reload(), 2000);
             });
         }
