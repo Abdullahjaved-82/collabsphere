@@ -19,8 +19,15 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Intercept raw exceptions early on Vercel before the renderer crashes on the 'view' service
-        $exceptions->report(function (\Throwable $e) {
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
             if (str_contains(__DIR__, 'var/task') || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
+                if ($request->expectsJson() || $request->isXmlHttpRequest()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $e->getMessage() . ' in ' . basename($e->getFile()) . ':' . $e->getLine()
+                    ], 500);
+                }
+                http_response_code(500);
                 echo "<h1>RAW BOOTSTRAP EXCEPTION CAUGHT</h1>";
                 echo "<h3>Message: " . htmlspecialchars($e->getMessage()) . "</h3>";
                 echo "<p>File: " . htmlspecialchars($e->getFile()) . " on line " . $e->getLine() . "</p>";
