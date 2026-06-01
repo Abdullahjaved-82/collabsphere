@@ -23,22 +23,6 @@
                 <p class="text-xs text-slate-500 mt-2">Share this code with your teammates to invite them.</p>
             </div>
 
-            <form action="{{ route('teams.join') }}" method="POST" class="border-t border-slate-200 pt-6">
-                @csrf
-                <h4 class="text-sm font-semibold text-slate-900 mb-3">Join Another Team</h4>
-                <div class="flex gap-3">
-                    <input type="text" 
-                           name="invite_code" 
-                           placeholder="Enter 8-character invite code" 
-                           maxlength="8"
-                           class="cs-input flex-1"
-                           required>
-                    <button type="submit" class="px-6 py-3 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition">Join</button>
-                </div>
-                @error('invite_code')
-                    <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
-                @enderror
-            </form>
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-200 p-8">
