@@ -34,27 +34,30 @@ class TaskService
      */
     public function moveTask(Task $task, string $newStatus, int $newPosition): void
     {
-        $this->db->transaction(function () use ($task, $newStatus, $newPosition) {
-            $oldStatus = $task->status;
+        $oldStatus = $task->status;
+        $oldPosition = $task->position;
 
-            // If moving to different column, reorder all tasks in the new column
+        $this->db->transaction(function () use ($task, $newStatus, $newPosition, $oldStatus, $oldPosition) {
+            // Reorder positions
             if ($oldStatus !== $newStatus) {
+                // Moving to different column: make room at new position
                 Task::where('project_id', $task->project_id)
                     ->where('status', $newStatus)
                     ->where('position', '>=', $newPosition)
                     ->increment('position');
+
+                // Close gap in old column
+                Task::where('project_id', $task->project_id)
+                    ->where('status', $oldStatus)
+                    ->where('position', '>', $oldPosition)
+                    ->decrement('position');
             } else {
-                // Reordering within same column
-                $oldPosition = $task->position;
-                
                 if ($newPosition < $oldPosition) {
-                    // Moving up
                     Task::where('project_id', $task->project_id)
                         ->where('status', $oldStatus)
                         ->whereBetween('position', [$newPosition, $oldPosition - 1])
                         ->increment('position');
-                } else {
-                    // Moving down
+                } elseif ($newPosition > $oldPosition) {
                     Task::where('project_id', $task->project_id)
                         ->where('status', $oldStatus)
                         ->whereBetween('position', [$oldPosition + 1, $newPosition])
@@ -62,8 +65,55 @@ class TaskService
                 }
             }
 
-            $task->update(['status' => $newStatus, 'position' => $newPosition]);
+            // Update task without firing observer events inside the transaction
+            Task::withoutEvents(function () use ($task, $newStatus, $newPosition) {
+                $task->update(['status' => $newStatus, 'position' => $newPosition]);
+            });
         });
+
+        // Fire observer logic AFTER transaction commits successfully
+        if ($oldStatus !== $newStatus) {
+            $task->refresh();
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $userName = $user ? $user->name : 'System';
+
+            $statusLabels = [
+                'todo' => 'To Do',
+                'in_progress' => 'In Progress',
+                'review' => 'Review',
+                'done' => 'Done',
+            ];
+            $newLabel = $statusLabels[$newStatus] ?? ucfirst($newStatus);
+
+            try {
+                \App\Models\Activity::create([
+                    'user_id' => $user?->id,
+                    'project_id' => $task->project_id,
+                    'task_id' => $task->id,
+                    'action' => 'moved',
+                    'description' => "{$userName} moved '{$task->title}' to {$newLabel}",
+                ]);
+
+                if ($task->assigned_to && $user && $task->assigned_to !== $user->id) {
+                    \App\Models\Notification::create([
+                        'user_id' => $task->assigned_to,
+                        'type' => 'task_status_updated',
+                        'data' => [
+                            'message' => "'{$task->title}' status updated to {$newLabel}",
+                            'project_id' => $task->project_id,
+                            'task_id' => $task->id,
+                            'icon' => '⏱',
+                            'type' => 'success'
+                        ]
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Failed to log activity/notification for task move', [
+                    'task_id' => $task->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     /**
