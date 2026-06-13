@@ -31,7 +31,7 @@ class ProjectController extends Controller
     {
         // Only show teams where the user is the leader
         $teams = auth()->user()->teams()->wherePivot('role', 'leader')->get();
-        $preselectedTeamId = $request->query('team_id');
+        $preselectedTeamId = old('team_id', $request->query('team_id'));
 
         return view('projects.create', compact('teams', 'preselectedTeamId'));
     }
