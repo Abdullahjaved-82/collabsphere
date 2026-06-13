@@ -40,8 +40,13 @@
                     </div>
 
                     <div>
-                        <label for="description" class="block text-sm font-medium text-slate-700 mb-2">Description</label>
-                        <textarea id="description" name="description" rows="4" placeholder="Brief description of the project..." class="cs-input">{{ old('description') }}</textarea>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="description" class="block text-sm font-medium text-slate-700">Description</label>
+                            <span class="text-xs font-medium text-indigo-700 bg-indigo-50 px-2 py-1 rounded border border-indigo-100 flex items-center gap-1">
+                                🤖 AI Tip: Include tech stack & architecture
+                            </span>
+                        </div>
+                        <textarea id="description" name="description" rows="4" placeholder="E.g., A React & Laravel e-commerce platform using microservices. We need frontend UI, backend API integration, and cloud deployment. This helps the AI intelligently break down and assign tasks based on team skills!" class="cs-input">{{ old('description') }}</textarea>
                         @error('description')
                             <p class="mt-1 text-sm text-rose-600">{{ $message }}</p>
                         @enderror

@@ -46,7 +46,7 @@ class OnboardingController extends Controller
     {
         $validated = $request->validate([
             'bio' => 'nullable|string|max:1000',
-            'specialty' => 'nullable|string|max:255',
+            'specialty' => 'required|string|max:255',
             'avatar' => 'nullable|image|max:10240', // max 10MB
         ]);
 

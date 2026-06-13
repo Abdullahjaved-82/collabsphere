@@ -55,7 +55,7 @@
 
         <div>
             <x-input-label for="specialty" :value="__('Specialty / Expertise')" />
-            <x-text-input id="specialty" name="specialty" type="text" class="mt-1 block w-full text-sm" :value="old('specialty', $user->specialty)" placeholder="E.g., Frontend Development, UI/UX Design..." />
+            <x-text-input id="specialty" name="specialty" type="text" class="mt-1 block w-full text-sm" :value="old('specialty', $user->specialty)" placeholder="E.g., Frontend Development, UI/UX Design..." required />
             <x-input-error class="mt-2" :messages="$errors->get('specialty')" />
         </div>
 

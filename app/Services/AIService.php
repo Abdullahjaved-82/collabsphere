@@ -130,7 +130,8 @@ Return ONLY a JSON array. Each task: {
   "priority": "low"|"medium"|"high"|"critical",
   "estimated_hours": number,
   "suggested_status": "todo",
-  "category": "frontend"|"backend"|"design"|"research"|"testing"|"documentation"
+  "category": "frontend"|"backend"|"design"|"research"|"testing"|"documentation",
+  "assigned_to": integer|null (ID of the suggested team member based on specialty, or null if no one matches)
 }
 Generate 6-10 tasks. Be specific to the project domain.
 Do not include any text before or after the JSON array.
@@ -148,6 +149,14 @@ PROMPT;
         $existingTasks = $project->tasks->count();
         $deadline = $project->deadline ? $project->deadline->format('Y-m-d') : 'No deadline set';
 
+        $membersList = "None";
+        if ($project->team) {
+            $membersList = $project->team->users->map(function ($u) {
+                $specialty = $u->specialty ?: 'Unspecified';
+                return "- ID: {$u->id}, Name: {$u->name}, Specialty: {$specialty}";
+            })->join("\n");
+        }
+
         return <<<PROMPT
 Project: {$project->title}
 Description: {$project->description}
@@ -155,7 +164,12 @@ Deadline: {$deadline}
 Team Size: {$teamSize} members
 Existing Tasks: {$existingTasks}
 
-Generate a comprehensive task breakdown for this project. Consider the team size and deadline when estimating hours. Make tasks specific and actionable for a student team.
+Team Members Available for Assignment:
+{$membersList}
+
+Read the project description carefully. If there is no clear description, use your own thinking to infer the necessary tasks based on the title.
+Generate a comprehensive task breakdown for this project. Consider the team size and deadline when estimating hours. 
+For each task, recommend the best partner/team member suited for it according to their Specialty or field. If you cannot find any user with the required expertise, you must leave it unassigned (null).
 PROMPT;
     }
 
@@ -206,6 +220,7 @@ PROMPT;
                 'estimated_hours' => is_numeric($task['estimated_hours'] ?? null) ? (float) $task['estimated_hours'] : 2,
                 'suggested_status' => 'todo',
                 'category' => in_array($task['category'] ?? '', $validCategories) ? $task['category'] : 'backend',
+                'assigned_to' => is_numeric($task['assigned_to'] ?? null) ? (int) $task['assigned_to'] : null,
             ];
         }, $tasks);
     }

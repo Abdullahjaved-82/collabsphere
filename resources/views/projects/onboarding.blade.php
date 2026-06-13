@@ -132,7 +132,7 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Specialty / Expertise</label>
                         <div class="relative">
-                            <select x-model="specialtySelect" @change="if(specialtySelect !== 'custom') specialty = specialtySelect; showCustomSpecialty = (specialtySelect === 'custom')"
+                            <select x-model="specialtySelect" @change="if(specialtySelect !== 'custom') specialty = specialtySelect; showCustomSpecialty = (specialtySelect === 'custom')" required
                                     class="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 text-sm bg-white appearance-none cursor-pointer">
                                 <option value="">Select your specialty...</option>
                                 <option value="Frontend Development">🎨 Frontend Development</option>
@@ -156,7 +156,7 @@
                             </div>
                         </div>
                         <div x-show="showCustomSpecialty" x-transition class="mt-3">
-                            <input x-model="specialty" type="text" maxlength="255"
+                            <input x-model="specialty" type="text" maxlength="255" :required="showCustomSpecialty"
                                    class="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 text-sm placeholder-slate-400 bg-white" 
                                    placeholder="E.g., Game Development, Blockchain, AR/VR...">
                         </div>
