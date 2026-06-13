@@ -123,9 +123,44 @@
                     <!-- Bio Input -->
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">A short bio</label>
-                        <textarea x-model="bio" rows="4" 
+                        <textarea x-model="bio" rows="3" 
                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 text-sm placeholder-slate-400 bg-white" 
                                   placeholder="E.g., Computer science senior, UI designer, cloud enthusiast..."></textarea>
+                    </div>
+
+                    <!-- Specialty / Client Field -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Specialty / Expertise</label>
+                        <div class="relative">
+                            <select x-model="specialtySelect" @change="if(specialtySelect !== 'custom') specialty = specialtySelect; showCustomSpecialty = (specialtySelect === 'custom')"
+                                    class="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 text-sm bg-white appearance-none cursor-pointer">
+                                <option value="">Select your specialty...</option>
+                                <option value="Frontend Development">🎨 Frontend Development</option>
+                                <option value="Backend Development">⚙️ Backend Development</option>
+                                <option value="Full Stack Development">🔥 Full Stack Development</option>
+                                <option value="UI/UX Design">🖌️ UI/UX Design</option>
+                                <option value="Mobile Development">📱 Mobile Development</option>
+                                <option value="Data Science">📊 Data Science</option>
+                                <option value="Machine Learning">🤖 Machine Learning</option>
+                                <option value="DevOps">🚀 DevOps</option>
+                                <option value="Cloud Architecture">☁️ Cloud Architecture</option>
+                                <option value="Cybersecurity">🔒 Cybersecurity</option>
+                                <option value="Database Administration">🗃️ Database Administration</option>
+                                <option value="Project Management">📋 Project Management</option>
+                                <option value="QA / Testing">🧪 QA / Testing</option>
+                                <option value="Technical Writing">📝 Technical Writing</option>
+                                <option value="custom">✏️ Other (type your own)</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                                <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                        <div x-show="showCustomSpecialty" x-transition class="mt-3">
+                            <input x-model="specialty" type="text" maxlength="255"
+                                   class="w-full h-12 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 text-sm placeholder-slate-400 bg-white" 
+                                   placeholder="E.g., Game Development, Blockchain, AR/VR...">
+                        </div>
+                        <span class="text-[10px] text-slate-400 mt-1.5 block">This will be visible to your teammates and can be changed later in settings.</span>
                     </div>
 
                     <!-- Form Navigation -->
@@ -249,6 +284,9 @@
                 currentStep: 1,
                 loading: false,
                 bio: '{{ addslashes($user->bio) }}',
+                specialty: '{{ addslashes($user->specialty ?? "") }}',
+                specialtySelect: '{{ addslashes($user->specialty ?? "") }}',
+                showCustomSpecialty: false,
                 avatarFile: null,
                 avatarPreview: '{{ $user->avatar ? asset("storage/".$user->avatar) : "" }}',
                 
@@ -274,6 +312,7 @@
                     this.loading = true;
                     const formData = new FormData();
                     formData.append('bio', this.bio);
+                    formData.append('specialty', this.specialty);
                     if (this.avatarFile) {
                         formData.append('avatar', this.avatarFile);
                     }

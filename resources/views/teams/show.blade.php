@@ -38,9 +38,16 @@
                         <div class="flex-1 min-w-0">
                             <p class="font-semibold text-slate-900 text-sm truncate">{{ $member->name }}</p>
                             <p class="text-xs text-slate-500 truncate">{{ $member->email }}</p>
-                            <span class="inline-flex mt-1 px-2 py-0.5 rounded text-xs font-medium {{ $member->pivot->role === 'leader' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-700' }}">
-                                {{ ucfirst($member->pivot->role) }}
-                            </span>
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium {{ $member->pivot->role === 'leader' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-700' }}">
+                                    {{ ucfirst($member->pivot->role) }}
+                                </span>
+                                @if ($member->specialty)
+                                    <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700">
+                                        {{ $member->specialty }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @endforeach

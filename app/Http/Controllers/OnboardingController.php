@@ -46,11 +46,13 @@ class OnboardingController extends Controller
     {
         $validated = $request->validate([
             'bio' => 'nullable|string|max:1000',
+            'specialty' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|max:10240', // max 10MB
         ]);
 
         $user = Auth::user();
         $user->bio = $validated['bio'] ?? $user->bio;
+        $user->specialty = $validated['specialty'] ?? $user->specialty;
 
         if ($request->hasFile('avatar')) {
             // Delete old avatar if exists

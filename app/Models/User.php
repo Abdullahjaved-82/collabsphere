@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'bio',
+        'specialty',
         'role',
         'has_completed_onboarding',
     ];
