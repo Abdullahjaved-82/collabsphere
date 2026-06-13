@@ -48,7 +48,12 @@
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-200 p-8">
-            <h3 class="text-lg font-semibold text-slate-900 mb-6">Projects ({{ $team->projects->count() }})</h3>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-slate-900">Projects ({{ $team->projects->count() }})</h3>
+                @if ($team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
+                    <a href="{{ route('projects.create', ['team_id' => $team->id]) }}" class="cs-primary-btn text-sm">+ Create Project</a>
+                @endif
+            </div>
             @if ($team->projects->isEmpty())
                 @if ($team->users()->where('user_id', auth()->id())->wherePivot('role', 'leader')->exists())
                     <p class="text-slate-500 text-center py-8">No projects yet. Create a new project to get started.</p>
