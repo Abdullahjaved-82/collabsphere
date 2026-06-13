@@ -120,8 +120,14 @@
                     <label class="block text-sm font-medium text-slate-700 mb-1">To:</label>
                     <select name="receiver_id" required class="cs-input w-full" style="border: 1.5px solid #E2E8F0; border-radius: 10px; padding: 12px; font-size: 14px;">
                         <option value="">Select team member...</option>
-                        @foreach ($teamMembers ?? [] as $member)
-                            <option value="{{ $member->id }}">{{ $member->name }} ({{ $member->email }})</option>
+                        @foreach ($teamsWithMembers ?? [] as $team)
+                            @if ($team->users->isNotEmpty())
+                                <optgroup label="🏢 {{ $team->name }}">
+                                    @foreach ($team->users as $member)
+                                        <option value="{{ $member->id }}">{{ $member->name }} ({{ $member->email }})</option>
+                                    @endforeach
+                                </optgroup>
+                            @endif
                         @endforeach
                     </select>
                 </div>

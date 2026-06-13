@@ -27,14 +27,13 @@ class MessageController extends Controller
         $sent = $this->messageRepository->getSentByUser(auth()->user());
         $unreadCount = $this->messageService->getUnreadCount(auth()->user());
         
-        $teamMembers = auth()->user()->teams()
-            ->with('users')
-            ->get()
-            ->flatMap(fn($team) => $team->users)
-            ->where('id', '!=', auth()->id())
-            ->unique('id');
+        $teamsWithMembers = auth()->user()->teams()
+            ->with(['users' => function ($query) {
+                $query->where('users.id', '!=', auth()->id());
+            }])
+            ->get();
 
-        return view('projects.inbox', compact('messages', 'sent', 'unreadCount', 'teamMembers'));
+        return view('projects.inbox', compact('messages', 'sent', 'unreadCount', 'teamsWithMembers'));
     }
 
     /**
