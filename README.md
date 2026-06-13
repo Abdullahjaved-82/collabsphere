@@ -29,14 +29,17 @@ CollabSphere is a premium, high-fidelity student collaboration and project manag
 
 ### 4. Groq AI Task Assistant (`/projects/{project}/ai-assistant`)
 *   **Intelligent Breakdown**: Leverages the **Groq API** (Llama 3.1 70B model) to analyze project descriptions and generate structured, context-rich task breakdowns.
+*   **Smart Task Assignment**: The AI analyzes the `Specialty` / `Expertise` of all available team members and automatically assigns generated tasks to the most suitable partner. It gracefully leaves tasks unassigned if no one fits the required skill profile.
+*   **Creative Inference**: If a project lacks a detailed description, the AI uses its own inference engine to deduce the necessary development lifecycle steps based on the project title.
 *   **Staggered Card Entrance**: Renders AI recommendations in a beautiful staggered sequence with category badges.
-*   **Accept / Reject Transitions**: Let's users adjust details (deadlines, priorities, team assignments) inline, accepting fly-out animations or rejecting items.
+*   **Accept / Reject Transitions**: Lets users adjust details (deadlines, priorities, team assignments) inline, accepting fly-out animations or rejecting items.
 
-### 5. Multi-Step Onboarding Wizard (`/onboarding`)
+### 5. Multi-Step Onboarding Wizard & Strict Profiles (`/onboarding`)
 *   **Route Gating Middleware**: Custom middleware blocks all application screens and redirects newly registered users to `/onboarding`.
+*   **Strict Specialty Enforcement**: Forces all users (new and legacy) to configure a mandatory "Specialty / Expertise" field before accessing the dashboard, guaranteeing the AI always has assignment context.
 *   **3-Step Setup Wizard**:
-    *   *Step 1*: Write a biography and upload a teammate portrait (avatar).
-    *   *Step 2*: Create a brand-new team workspace or join an existing team via an invite code (using modern sliding tab cards).
+    *   *Step 1*: Configure specialty, write a biography, and upload a teammate portrait.
+    *   *Step 2*: Create a brand-new team workspace or join an existing team via an invite code.
     *   *Step 3*: Launch your first project inside the selected team.
 *   **Completion Checkmarks**: Sets `has_completed_onboarding = true` upon completion and redirects to the dashboard.
 
