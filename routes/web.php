@@ -15,6 +15,15 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/run-migrations', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return 'Migrations executed successfully: <br>' . nl2br(\Illuminate\Support\Facades\Artisan::output());
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 Route::middleware('auth')->group(function () {
     // Onboarding Wizard Routes (Must be accessible while onboarding is not completed)
     Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
